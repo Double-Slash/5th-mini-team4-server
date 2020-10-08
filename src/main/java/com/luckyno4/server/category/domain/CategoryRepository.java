@@ -1,8 +1,8 @@
-package com.luckyno4.server.answer.domain;
+package com.luckyno4.server.category.domain;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface AnswerRepository extends JpaRepository<Answer, Long> {
+public interface CategoryRepository extends JpaRepository<Category, Long> {
 }
