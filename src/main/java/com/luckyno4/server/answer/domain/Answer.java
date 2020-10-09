@@ -7,8 +7,6 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 
 import com.luckyno4.server.common.BaseTimeEntity;
 import com.luckyno4.server.question.domain.Question;
@@ -28,10 +26,8 @@ public class Answer extends BaseTimeEntity {
 
 	private String writer;
 
-	@NotBlank
 	private String answer;
 
-	@NotNull
 	private int contribution;
 
 	@ManyToOne
@@ -48,5 +44,10 @@ public class Answer extends BaseTimeEntity {
 	public void update(Answer requestAnswer) {
 		this.answer = requestAnswer.answer;
 		this.contribution = requestAnswer.contribution;
+	}
+
+	public void setQuestion(Question question) {
+		this.question = question;
+		question.getAnswers().add(this);
 	}
 }

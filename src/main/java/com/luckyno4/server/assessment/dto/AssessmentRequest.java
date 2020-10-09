@@ -9,6 +9,8 @@ import javax.validation.constraints.NotBlank;
 import com.luckyno4.server.assessment.domain.Assessment;
 import com.luckyno4.server.category.domain.Category;
 import com.luckyno4.server.category.dto.CategoryRequest;
+import com.luckyno4.server.question.domain.Question;
+import com.luckyno4.server.question.dto.QuestionRequest;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -24,14 +26,25 @@ public class AssessmentRequest {
 	private List<@Valid CategoryRequest> categories;
 
 	public Assessment toAssessment() {
-		return Assessment.builder()
-			.assessment(assessment)
-			.build();
+		return new Assessment(assessment);
+		// return Assessment.builder()
+		// 	.assessment(assessment)
+		// 	.build();
 	}
 
 	public List<Category> toCategories() {
 		return categories.stream()
 			.map(category -> category.toCategory())
+			.collect(Collectors.toList());
+	}
+
+	public List<List<Question>> toQuestions() {
+		return categories.stream()
+			.map(categoryRequest -> {
+				return categoryRequest.getQuestions().stream()
+					.map(QuestionRequest::toQuestion)
+					.collect(Collectors.toList());
+			})
 			.collect(Collectors.toList());
 	}
 }

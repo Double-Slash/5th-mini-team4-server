@@ -1,8 +1,8 @@
 package com.luckyno4.server.answer.dto;
 
+import java.util.Objects;
+
 import javax.persistence.Lob;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 
 import com.luckyno4.server.answer.domain.Answer;
 import lombok.AccessLevel;
@@ -14,17 +14,34 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor(access = AccessLevel.PUBLIC)
 @Getter
 public class AnswerRequest {
+	private String writer;
 	@Lob
-	@NotBlank
 	private String answer;
 
-	@NotNull
 	private int contribution;
 
 	public Answer toAnswer() {
 		return Answer.builder()
+			.writer(writer)
 			.answer(answer)
 			.contribution(contribution)
 			.build();
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o)
+			return true;
+		if (!(o instanceof AnswerRequest))
+			return false;
+		AnswerRequest that = (AnswerRequest)o;
+		return contribution == that.contribution &&
+			Objects.equals(writer, that.writer) &&
+			Objects.equals(answer, that.answer);
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(writer, answer, contribution);
 	}
 }

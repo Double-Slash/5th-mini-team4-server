@@ -18,6 +18,8 @@ import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.luckyno4.server.answer.domain.Answer;
+import com.luckyno4.server.answer.dto.AnswerRequest;
 import com.luckyno4.server.assessment.documentation.AssessmentDocumentation;
 import com.luckyno4.server.assessment.domain.Assessment;
 import com.luckyno4.server.assessment.dto.AssessmentRequest;
@@ -26,12 +28,15 @@ import com.luckyno4.server.assessment.service.AssessmentService;
 import com.luckyno4.server.category.domain.Category;
 import com.luckyno4.server.category.dto.CategoryRequest;
 import com.luckyno4.server.documentation.Documentation;
+import com.luckyno4.server.question.domain.Question;
 import com.luckyno4.server.question.dto.QuestionRequest;
 
 @WebMvcTest(controllers = AssessmentController.class)
 class AssessmentControllerTest extends Documentation {
 	@MockBean
 	private AssessmentService assessmentService;
+
+	private AnswerRequest answerRequest;
 
 	private AssessmentRequest assessmentRequest;
 
@@ -52,6 +57,8 @@ class AssessmentControllerTest extends Documentation {
 		RestDocumentationContextProvider restDocumentationContextProvider) {
 		super.setUp(webApplicationContext, restDocumentationContextProvider);
 
+		answerRequest = new AnswerRequest("사용자", "답변입니다.", 100);
+
 		questionRequest = QuestionRequest.builder()
 			.isContribution(true)
 			.isDescription(true)
@@ -64,11 +71,19 @@ class AssessmentControllerTest extends Documentation {
 
 		category = categoryRequest.toCategory();
 
+		Question question = questionRequest.toQuestion();
+
+		question.setCategory(category);
+
+		Answer answer = answerRequest.toAnswer();
+
+		answer.setQuestion(question);
+
 		assessment = new Assessment(1L, "평가", Collections.singletonList(category));
 
-		objectMapper = new ObjectMapper();
-
 		assessmentResponse = AssessmentResponse.of(assessment);
+
+		objectMapper = new ObjectMapper();
 	}
 
 	@Test

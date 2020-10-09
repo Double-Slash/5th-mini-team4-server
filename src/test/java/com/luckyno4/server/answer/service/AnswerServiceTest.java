@@ -15,6 +15,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import com.luckyno4.server.answer.domain.Answer;
 import com.luckyno4.server.answer.domain.AnswerRepository;
 import com.luckyno4.server.answer.dto.AnswerRequest;
+import com.luckyno4.server.assessment.domain.AssessmentRepository;
 
 @ExtendWith(MockitoExtension.class)
 class AnswerServiceTest {
@@ -23,13 +24,16 @@ class AnswerServiceTest {
 	@Mock
 	private AnswerRepository answerRepository;
 
+	@Mock
+	private AssessmentRepository assessmentRepository;
+
 	private Answer answer;
 
 	private AnswerRequest answerRequest;
 
 	@BeforeEach
 	void setUp() {
-		answerService = new AnswerService(answerRepository);
+		answerService = new AnswerService(answerRepository, assessmentRepository);
 
 		answer = Answer.builder()
 			.answer("그냥 그랬어요.")
@@ -37,7 +41,7 @@ class AnswerServiceTest {
 			.writer("사용자")
 			.build();
 
-		answerRequest = new AnswerRequest("아니에요 좋았어요", 80);
+		answerRequest = new AnswerRequest("사용자", "아니에요 좋았어요", 80);
 	}
 
 	@Test

@@ -1,5 +1,6 @@
 package com.luckyno4.server.category.domain;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -40,15 +41,16 @@ public class Category extends BaseTimeEntity {
 	private Assessment assessment;
 
 	@OneToMany(mappedBy = "category", cascade = CascadeType.PERSIST, orphanRemoval = true)
-	private List<Question> questions;
+	private List<Question> questions = new ArrayList<>();
 
 	@Builder
-	public Category(String category, Assessment assessment, List<Question> questions) {
+	public Category(String category) {
 		this.category = category;
-		this.questions = questions;
 	}
 
 	public void setAssessment(Assessment assessment) {
 		this.assessment = assessment;
+
+		assessment.getCategories().add(this);
 	}
 }

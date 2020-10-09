@@ -63,4 +63,8 @@ public class Question extends BaseTimeEntity {
 
 		category.getQuestions().add(this);
 	}
+
+	public void addAnswer(Answer answer) {
+		answers.add(answer);
+	}
 }

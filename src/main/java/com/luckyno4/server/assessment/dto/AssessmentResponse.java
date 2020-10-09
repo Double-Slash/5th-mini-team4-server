@@ -1,6 +1,5 @@
 package com.luckyno4.server.assessment.dto;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -15,6 +14,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PUBLIC)
+// @JsonIgnoreProperties(ignoreUnknown = true)
 public class AssessmentResponse {
 	private Long id;
 
@@ -23,10 +23,6 @@ public class AssessmentResponse {
 	private List<CategoryResponse> categories;
 
 	public static List<AssessmentResponse> listOf(List<Assessment> assessments) {
-		if (assessments.isEmpty()) {
-			return new ArrayList<>();
-		}
-
 		return assessments.stream()
 			.map(AssessmentResponse::of)
 			.collect(Collectors.toList());

@@ -14,6 +14,7 @@ public class AnswerDocumentation {
 				parameterWithName("id").description("수정할 평가 ID")
 			),
 			requestFields(
+				fieldWithPath("writer").type(JsonFieldType.STRING).description("사용자"),
 				fieldWithPath("answer").type(JsonFieldType.STRING).description("평가 내용"),
 				fieldWithPath("contribution").type(JsonFieldType.NUMBER).description("기여도")
 			)
@@ -25,5 +26,17 @@ public class AnswerDocumentation {
 			pathParameters(
 				parameterWithName("id").description("삭제할 평가 ID")
 			));
+	}
+
+	public static RestDocumentationResultHandler createAnswer() {
+		return document("answer/create",
+			requestFields(
+				fieldWithPath("assessmentId").type(JsonFieldType.NUMBER).description("평가 ID"),
+				fieldWithPath("answers").type(JsonFieldType.ARRAY).description("답변 목록"),
+				fieldWithPath("answers.[].writer").type(JsonFieldType.STRING).description("사용자"),
+				fieldWithPath("answers.[].answer").type(JsonFieldType.STRING).description("평가 내용"),
+				fieldWithPath("answers.[].contribution").type(JsonFieldType.NUMBER).description("기여도")
+			));
+
 	}
 }

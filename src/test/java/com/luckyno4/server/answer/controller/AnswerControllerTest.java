@@ -4,6 +4,8 @@ import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+import java.util.Collections;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -15,6 +17,7 @@ import org.springframework.web.context.WebApplicationContext;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.luckyno4.server.answer.documentation.AnswerDocumentation;
+import com.luckyno4.server.answer.dto.AnswerCreateRequest;
 import com.luckyno4.server.answer.dto.AnswerRequest;
 import com.luckyno4.server.answer.service.AnswerService;
 import com.luckyno4.server.documentation.Documentation;
@@ -27,10 +30,18 @@ class AnswerControllerTest extends Documentation {
 	@MockBean
 	private AnswerService answerService;
 
+	private AnswerRequest answerRequest;
+
+	private AnswerCreateRequest answerCreateRequest;
+
 	@BeforeEach
 	public void setUp(WebApplicationContext webApplicationContext,
 		RestDocumentationContextProvider restDocumentationContextProvider) {
 		super.setUp(webApplicationContext, restDocumentationContextProvider);
+
+		answerRequest = new AnswerRequest("사용자", "답변입니다.", 100);
+
+		answerCreateRequest = new AnswerCreateRequest(1L, Collections.singletonList(answerRequest));
 
 		objectMapper = new ObjectMapper();
 	}
@@ -39,7 +50,6 @@ class AnswerControllerTest extends Documentation {
 	void updateAnswer() throws Exception {
 		doNothing().when(answerService).updateAnswer(anyLong(), any());
 
-		AnswerRequest answerRequest = new AnswerRequest("답변입니다.", 100);
 
 		mockMvc.perform(RestDocumentationRequestBuilders.put("/api/answers/{id}", 1L)
 			.contentType(MediaType.APPLICATION_JSON)
@@ -57,5 +67,17 @@ class AnswerControllerTest extends Documentation {
 			.andExpect(status().isNoContent())
 			.andDo(print())
 			.andDo(AnswerDocumentation.deleteAnswer());
+	}
+
+	@Test
+	void createAnswer() throws Exception {
+		doNothing().when(answerService).createAnswer(any());
+
+		mockMvc.perform(RestDocumentationRequestBuilders.post("/api/answers")
+			.content(objectMapper.writeValueAsString(answerCreateRequest))
+			.contentType(MediaType.APPLICATION_JSON))
+			.andExpect(status().isOk())
+			.andDo(print())
+			.andDo(AnswerDocumentation.createAnswer());
 	}
 }

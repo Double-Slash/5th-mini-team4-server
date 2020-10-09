@@ -2,6 +2,7 @@ package com.luckyno4.server.assessment.domain;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
@@ -14,6 +15,7 @@ import javax.validation.constraints.NotBlank;
 
 import com.luckyno4.server.category.domain.Category;
 import com.luckyno4.server.common.BaseTimeEntity;
+import com.luckyno4.server.question.domain.Question;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -39,8 +41,13 @@ public class Assessment extends BaseTimeEntity {
 	private List<Category> categories = new ArrayList<>();
 
 	@Builder
-	public Assessment(String assessment, List<Category> categories) {
+	public Assessment(String assessment) {
 		this.assessment = assessment;
-		this.categories = categories;
+	}
+
+	public List<Question> getQuestions() {
+		return categories.stream()
+			.flatMap(category -> category.getQuestions().stream())
+			.collect(Collectors.toList());
 	}
 }

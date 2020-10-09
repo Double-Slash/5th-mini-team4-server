@@ -3,6 +3,7 @@ package com.luckyno4.server.question.dto;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.luckyno4.server.question.domain.Question;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -13,9 +14,11 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PUBLIC)
 public class QuestionRequest {
 	@NotNull
+	@JsonProperty(value = "description")
 	private boolean isDescription;
 
 	@NotNull
+	@JsonProperty(value = "contribution")
 	private boolean isContribution;
 
 	@NotBlank

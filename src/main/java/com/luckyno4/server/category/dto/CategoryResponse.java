@@ -1,6 +1,5 @@
 package com.luckyno4.server.category.dto;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -21,9 +20,6 @@ public class CategoryResponse {
 	private List<QuestionResponse> questions;
 
 	public static List<CategoryResponse> listOf(List<Category> categories) {
-		if (categories.isEmpty()) {
-			return new ArrayList<>();
-		}
 		return categories.stream()
 			.map(CategoryResponse::of)
 			.collect(Collectors.toList());

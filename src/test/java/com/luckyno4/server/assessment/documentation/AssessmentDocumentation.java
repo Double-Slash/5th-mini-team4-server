@@ -43,7 +43,14 @@ public class AssessmentDocumentation {
 				fieldWithPath("categories.[].questions.[].description").type(JsonFieldType.BOOLEAN)
 					.description("질문 서술형 여부"),
 				fieldWithPath("categories.[].questions.[].contribution").type(JsonFieldType.BOOLEAN)
-					.description("질문 점수형 여부")
+					.description("질문 점수형 여부"),
+				fieldWithPath("categories.[].questions.[].answers").type(JsonFieldType.ARRAY).description("질문에 대한 응답"),
+				fieldWithPath("categories.[].questions.[].answers.[].writer").type(JsonFieldType.STRING)
+					.description("사용자"),
+				fieldWithPath("categories.[].questions.[].answers.[].answer").type(JsonFieldType.STRING)
+					.description("평가 내용"),
+				fieldWithPath("categories.[].questions.[].answers.[].contribution").type(JsonFieldType.NUMBER)
+					.description("기여도")
 			));
 	}
 }

@@ -1,4 +1,4 @@
-package com.luckyno4.server.assessment.acceptance;
+package com.luckyno4.server.answer.acceptance;
 
 import static org.assertj.core.api.Assertions.*;
 
@@ -9,17 +9,19 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
 import com.luckyno4.server.acceptance.AcceptanceTest;
+import com.luckyno4.server.answer.dto.AnswerCreateRequest;
+import com.luckyno4.server.answer.dto.AnswerRequest;
 import com.luckyno4.server.assessment.dto.AssessmentRequest;
 import com.luckyno4.server.assessment.dto.AssessmentResponse;
 import com.luckyno4.server.category.dto.CategoryRequest;
 import com.luckyno4.server.question.dto.QuestionRequest;
 import io.restassured.RestAssured;
 
-public class AssessmentAcceptanceTest extends AcceptanceTest {
+public class AnswerAcceptanceTest extends AcceptanceTest {
 	@Test
-	void totalAssessmentTest() {
+	void totalAnswerTest() {
 		// given
-		// 평가 제작에 필요한 요소들
+		// 평가 생성 및 응답 생성에 필요한 요소
 		QuestionRequest questionRequest = QuestionRequest.builder()
 			.isContribution(true)
 			.isDescription(true)
@@ -30,8 +32,6 @@ public class AssessmentAcceptanceTest extends AcceptanceTest {
 
 		AssessmentRequest assessmentRequest = new AssessmentRequest("평가", Collections.singletonList(categoryRequest));
 
-		// when
-		// 평가 생성 API
 		RestAssured.given().log().all()
 			.contentType(MediaType.APPLICATION_JSON_VALUE)
 			.accept(MediaType.APPLICATION_JSON_VALUE)
@@ -41,29 +41,36 @@ public class AssessmentAcceptanceTest extends AcceptanceTest {
 			.then().log().all()
 			.statusCode(HttpStatus.CREATED.value());
 
+		AnswerRequest answerRequest = new AnswerRequest("작성자", "서술형 응답 내역", 50);
+
+		AnswerCreateRequest answerCreateRequest = new AnswerCreateRequest(1L, Collections.singletonList(answerRequest));
+
+		// when
+		// 응답 생성 API 호출
+		RestAssured.given().log().all()
+			.contentType(MediaType.APPLICATION_JSON_VALUE)
+			.accept(MediaType.APPLICATION_JSON_VALUE)
+			.body(answerCreateRequest)
+			.when()
+			.post("/api/answers")
+			.then().log().all()
+			.statusCode(HttpStatus.OK.value());
+
 		// then
-		// 평가 전체 조회
-		AssessmentResponse[] expect1 = RestAssured.given().log().all()
+		// 평가 호출 시 질문에 대한 응답이 옳게 저장되었는가.
+		AssessmentResponse expect = RestAssured.given().log().all()
 			.contentType(MediaType.APPLICATION_JSON_VALUE)
 			.accept(MediaType.APPLICATION_JSON_VALUE)
-			.body(assessmentRequest)
 			.when()
-			.get("/api/assessments")
+			.get("/api/assessments/1")
 			.then().log().all()
-			.extract().as(AssessmentResponse[].class);
+			.extract().as(AssessmentResponse.class);
 
-		assertThat(expect1[0].getAssessment()).isEqualTo(assessmentRequest.getAssessment());
-
-		// 특정 평가 조회
-		AssessmentResponse[] expect2 = RestAssured.given().log().all()
-			.contentType(MediaType.APPLICATION_JSON_VALUE)
-			.accept(MediaType.APPLICATION_JSON_VALUE)
-			.body(assessmentRequest)
-			.when()
-			.get("/api/assessments")
-			.then().log().all()
-			.extract().as(AssessmentResponse[].class);
-
-		assertThat(expect2[0].getAssessment()).isEqualTo(assessmentRequest.getAssessment());
+		assertThat(expect.getCategories().get(0).getQuestions().get(0).getAnswers().get(0).getWriter()).isEqualTo(
+			answerRequest.getWriter());
+		assertThat(expect.getCategories().get(0).getQuestions().get(0).getAnswers().get(0).getAnswer()).isEqualTo(
+			answerRequest.getAnswer());
+		assertThat(expect.getCategories().get(0).getQuestions().get(0).getAnswers().get(0).getContribution()).isEqualTo(
+			answerRequest.getContribution());
 	}
 }

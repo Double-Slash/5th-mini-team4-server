@@ -1,10 +1,11 @@
 package com.luckyno4.server.question.dto;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.luckyno4.server.answer.dto.AnswerResponse;
 import com.luckyno4.server.question.domain.Question;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -17,21 +18,24 @@ import lombok.NoArgsConstructor;
 public class QuestionResponse {
 	private String question;
 
+	@JsonProperty(value = "description")
 	private boolean isDescription;
 
+	@JsonProperty(value = "contribution")
 	private boolean isContribution;
 
+	private List<AnswerResponse> answers;
+
 	public static List<QuestionResponse> listOf(List<Question> questions) {
-		if (questions.isEmpty()) {
-			return new ArrayList<>();
-		}
 		return questions.stream()
 			.map(QuestionResponse::of)
 			.collect(Collectors.toList());
 	}
 
 	private static QuestionResponse of(Question question) {
-		return new QuestionResponse(question.getQuestion(), question.isDescription(), question.isContribution());
+		List<AnswerResponse> answerResponses = AnswerResponse.listOf(question.getAnswers());
+		return new QuestionResponse(question.getQuestion(), question.isDescription(), question.isContribution(),
+			answerResponses);
 	}
 
 	@Override

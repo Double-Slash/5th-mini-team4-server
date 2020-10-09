@@ -17,6 +17,7 @@ import com.luckyno4.server.assessment.domain.AssessmentRepository;
 import com.luckyno4.server.assessment.dto.AssessmentRequest;
 import com.luckyno4.server.assessment.dto.AssessmentResponse;
 import com.luckyno4.server.category.domain.Category;
+import com.luckyno4.server.category.domain.CategoryRepository;
 import com.luckyno4.server.category.dto.CategoryRequest;
 import com.luckyno4.server.question.dto.QuestionRequest;
 
@@ -26,6 +27,9 @@ class AssessmentServiceTest {
 
 	@Mock
 	private AssessmentRepository assessmentRepository;
+
+	@Mock
+	private CategoryRepository categoryRepository;
 
 	private AssessmentRequest assessmentRequest;
 
@@ -41,7 +45,7 @@ class AssessmentServiceTest {
 
 	@BeforeEach
 	void setUp() {
-		assessmentService = new AssessmentService(assessmentRepository);
+		assessmentService = new AssessmentService(assessmentRepository, categoryRepository);
 
 		questionRequest = QuestionRequest.builder()
 			.isContribution(true)
