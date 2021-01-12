@@ -29,6 +29,7 @@ import com.luckyno4.server.category.domain.Category;
 import com.luckyno4.server.category.dto.CategoryRequest;
 import com.luckyno4.server.documentation.Documentation;
 import com.luckyno4.server.question.domain.Question;
+import com.luckyno4.server.question.domain.QuestionType;
 import com.luckyno4.server.question.dto.QuestionRequest;
 
 @WebMvcTest(controllers = AssessmentController.class)
@@ -60,9 +61,8 @@ class AssessmentControllerTest extends Documentation {
 		answerRequest = new AnswerRequest("사용자", "답변입니다.", 100);
 
 		questionRequest = QuestionRequest.builder()
-			.isContribution(true)
-			.isDescription(true)
 			.question("질문은 서술형과 점수형입니다.")
+			.questionType(QuestionType.LONG)
 			.build();
 
 		categoryRequest = new CategoryRequest("카테고리", Collections.singletonList(questionRequest));

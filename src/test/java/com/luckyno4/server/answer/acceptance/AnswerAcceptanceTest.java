@@ -14,6 +14,7 @@ import com.luckyno4.server.answer.dto.AnswerRequest;
 import com.luckyno4.server.assessment.dto.AssessmentRequest;
 import com.luckyno4.server.assessment.dto.AssessmentResponse;
 import com.luckyno4.server.category.dto.CategoryRequest;
+import com.luckyno4.server.question.domain.QuestionType;
 import com.luckyno4.server.question.dto.QuestionRequest;
 import io.restassured.RestAssured;
 
@@ -23,9 +24,8 @@ public class AnswerAcceptanceTest extends AcceptanceTest {
 		// given
 		// 평가 생성 및 응답 생성에 필요한 요소
 		QuestionRequest questionRequest = QuestionRequest.builder()
-			.isContribution(true)
-			.isDescription(true)
 			.question("질문은 서술형과 점수형입니다.")
+			.questionType(QuestionType.LONG)
 			.build();
 
 		CategoryRequest categoryRequest = new CategoryRequest("카테고리", Collections.singletonList(questionRequest));

@@ -50,7 +50,6 @@ class AnswerControllerTest extends Documentation {
 	void updateAnswer() throws Exception {
 		doNothing().when(answerService).updateAnswer(anyLong(), any());
 
-
 		mockMvc.perform(RestDocumentationRequestBuilders.put("/api/answers/{id}", 1L)
 			.contentType(MediaType.APPLICATION_JSON)
 			.content(objectMapper.writeValueAsString(answerRequest)))

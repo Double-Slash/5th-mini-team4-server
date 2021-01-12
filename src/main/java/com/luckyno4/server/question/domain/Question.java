@@ -5,6 +5,8 @@ import java.util.List;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -14,7 +16,6 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 
 import com.luckyno4.server.answer.domain.Answer;
 import com.luckyno4.server.category.domain.Category;
@@ -35,11 +36,8 @@ public class Question extends BaseTimeEntity {
 	@SequenceGenerator(name = "question_sequence_gen", sequenceName = "question_sequence")
 	private Long id;
 
-	@NotNull
-	private boolean isDescription;
-
-	@NotNull
-	private boolean isContribution;
+	@Enumerated(EnumType.STRING)
+	private QuestionType questionType;
 
 	@NotBlank
 	private String question;
@@ -52,10 +50,9 @@ public class Question extends BaseTimeEntity {
 	private Category category;
 
 	@Builder
-	public Question(boolean isDescription, boolean isContribution, String question) {
-		this.isDescription = isDescription;
-		this.isContribution = isContribution;
+	public Question(String question, QuestionType questionType) {
 		this.question = question;
+		this.questionType = questionType;
 	}
 
 	public void setCategory(Category category) {

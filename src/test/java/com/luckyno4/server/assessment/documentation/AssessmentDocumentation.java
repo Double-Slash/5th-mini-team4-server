@@ -17,10 +17,8 @@ public class AssessmentDocumentation {
 				fieldWithPath("categories.[].category").type(JsonFieldType.STRING).description("카테고리 제목"),
 				fieldWithPath("categories.[].questions").type(JsonFieldType.ARRAY).description("질문 정보"),
 				fieldWithPath("categories.[].questions.[].question").type(JsonFieldType.STRING).description("질문 제목"),
-				fieldWithPath("categories.[].questions.[].description").type(JsonFieldType.BOOLEAN)
-					.description("질문 서술형 여부"),
-				fieldWithPath("categories.[].questions.[].contribution").type(JsonFieldType.BOOLEAN)
-					.description("질문 점수형 여부")
+				fieldWithPath("categories.[].questions.[].questionType").type(JsonFieldType.STRING)
+					.description("질문에 대한 응답 종류")
 			),
 			responseHeaders(
 				headerWithName("Location").description("생성된 평가 ID")
@@ -40,10 +38,8 @@ public class AssessmentDocumentation {
 				fieldWithPath("categories.[].category").type(JsonFieldType.STRING).description("카테고리 제목"),
 				fieldWithPath("categories.[].questions").type(JsonFieldType.ARRAY).description("질문 정보"),
 				fieldWithPath("categories.[].questions.[].question").type(JsonFieldType.STRING).description("질문 제목"),
-				fieldWithPath("categories.[].questions.[].description").type(JsonFieldType.BOOLEAN)
-					.description("질문 서술형 여부"),
-				fieldWithPath("categories.[].questions.[].contribution").type(JsonFieldType.BOOLEAN)
-					.description("질문 점수형 여부"),
+				fieldWithPath("categories.[].questions.[].questionType").type(JsonFieldType.STRING)
+					.description("질문에 대한 응답 종류"),
 				fieldWithPath("categories.[].questions.[].answers").type(JsonFieldType.ARRAY).description("질문에 대한 응답"),
 				fieldWithPath("categories.[].questions.[].answers.[].writer").type(JsonFieldType.STRING)
 					.description("사용자"),
