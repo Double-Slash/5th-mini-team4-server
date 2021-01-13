@@ -1,5 +1,7 @@
 package com.luckyno4.server.answer.acceptance;
 
+import static com.luckyno4.server.user.acceptance.step.AuthAcceptanceStep.*;
+import static org.apache.http.HttpHeaders.*;
 import static org.assertj.core.api.Assertions.*;
 
 import java.util.Collections;
@@ -16,6 +18,7 @@ import com.luckyno4.server.assessment.dto.AssessmentResponse;
 import com.luckyno4.server.category.dto.CategoryRequest;
 import com.luckyno4.server.question.domain.QuestionType;
 import com.luckyno4.server.question.dto.QuestionRequest;
+import com.luckyno4.server.user.dto.AuthResponse;
 import io.restassured.RestAssured;
 
 public class AnswerAcceptanceTest extends AcceptanceTest {
@@ -32,7 +35,10 @@ public class AnswerAcceptanceTest extends AcceptanceTest {
 
 		AssessmentRequest assessmentRequest = new AssessmentRequest("평가", Collections.singletonList(categoryRequest));
 
+		AuthResponse authResponse = requestAdminAuth();
+
 		RestAssured.given().log().all()
+			.header(AUTHORIZATION, toHeaderValue(authResponse))
 			.contentType(MediaType.APPLICATION_JSON_VALUE)
 			.accept(MediaType.APPLICATION_JSON_VALUE)
 			.body(assessmentRequest)
@@ -48,6 +54,7 @@ public class AnswerAcceptanceTest extends AcceptanceTest {
 		// when
 		// 응답 생성 API 호출
 		RestAssured.given().log().all()
+			.header(AUTHORIZATION, toHeaderValue(authResponse))
 			.contentType(MediaType.APPLICATION_JSON_VALUE)
 			.accept(MediaType.APPLICATION_JSON_VALUE)
 			.body(answerCreateRequest)
@@ -59,6 +66,7 @@ public class AnswerAcceptanceTest extends AcceptanceTest {
 		// then
 		// 평가 호출 시 질문에 대한 응답이 옳게 저장되었는가.
 		AssessmentResponse expect = RestAssured.given().log().all()
+			.header(AUTHORIZATION, toHeaderValue(authResponse))
 			.contentType(MediaType.APPLICATION_JSON_VALUE)
 			.accept(MediaType.APPLICATION_JSON_VALUE)
 			.when()

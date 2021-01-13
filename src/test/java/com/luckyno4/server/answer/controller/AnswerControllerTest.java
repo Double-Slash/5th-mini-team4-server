@@ -20,6 +20,7 @@ import com.luckyno4.server.answer.documentation.AnswerDocumentation;
 import com.luckyno4.server.answer.dto.AnswerCreateRequest;
 import com.luckyno4.server.answer.dto.AnswerRequest;
 import com.luckyno4.server.answer.service.AnswerService;
+import com.luckyno4.server.common.WithMockCustomUser;
 import com.luckyno4.server.documentation.Documentation;
 
 @WebMvcTest(controllers = AnswerController.class)
@@ -46,6 +47,7 @@ class AnswerControllerTest extends Documentation {
 		objectMapper = new ObjectMapper();
 	}
 
+	@WithMockCustomUser
 	@Test
 	void updateAnswer() throws Exception {
 		doNothing().when(answerService).updateAnswer(anyLong(), any());
@@ -58,6 +60,7 @@ class AnswerControllerTest extends Documentation {
 			.andDo(AnswerDocumentation.updateAnswer());
 	}
 
+	@WithMockCustomUser
 	@Test
 	void deleteAnswer() throws Exception {
 		doNothing().when(answerService).deleteAnswer(anyLong());
@@ -68,6 +71,7 @@ class AnswerControllerTest extends Documentation {
 			.andDo(AnswerDocumentation.deleteAnswer());
 	}
 
+	@WithMockCustomUser
 	@Test
 	void createAnswer() throws Exception {
 		doNothing().when(answerService).createAnswer(any());

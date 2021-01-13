@@ -27,6 +27,7 @@ import com.luckyno4.server.assessment.dto.AssessmentResponse;
 import com.luckyno4.server.assessment.service.AssessmentService;
 import com.luckyno4.server.category.domain.Category;
 import com.luckyno4.server.category.dto.CategoryRequest;
+import com.luckyno4.server.common.WithMockCustomUser;
 import com.luckyno4.server.documentation.Documentation;
 import com.luckyno4.server.question.domain.Question;
 import com.luckyno4.server.question.domain.QuestionType;
@@ -53,6 +54,7 @@ class AssessmentControllerTest extends Documentation {
 
 	private ObjectMapper objectMapper;
 
+	@Override
 	@BeforeEach
 	public void setUp(WebApplicationContext webApplicationContext,
 		RestDocumentationContextProvider restDocumentationContextProvider) {
@@ -86,6 +88,7 @@ class AssessmentControllerTest extends Documentation {
 		objectMapper = new ObjectMapper();
 	}
 
+	@WithMockCustomUser
 	@Test
 	void createAssessment() throws Exception {
 		given(assessmentService.save(any())).willReturn(1L);
@@ -99,6 +102,7 @@ class AssessmentControllerTest extends Documentation {
 			.andDo(AssessmentDocumentation.createAssessment());
 	}
 
+	@WithMockCustomUser
 	@Test
 	void readAssessment() throws Exception {
 		given(assessmentService.read(anyLong())).willReturn(assessmentResponse);
