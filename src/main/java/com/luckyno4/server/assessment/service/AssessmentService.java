@@ -14,6 +14,7 @@ import com.luckyno4.server.assessment.dto.AssessmentResponse;
 import com.luckyno4.server.category.domain.Category;
 import com.luckyno4.server.category.domain.CategoryRepository;
 import com.luckyno4.server.question.domain.Question;
+import com.luckyno4.server.user.domain.User;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -23,8 +24,10 @@ public class AssessmentService {
 	private final CategoryRepository categoryRepository;
 
 	@Transactional
-	public Long save(AssessmentRequest assessmentRequest) {
+	public Long save(User user, AssessmentRequest assessmentRequest) {
 		Assessment assessment = assessmentRequest.toAssessment();
+		assessment.setUser(user);
+
 		assessmentRepository.save(assessment);
 
 		List<Category> categories = assessmentRequest.toCategories();
@@ -55,15 +58,28 @@ public class AssessmentService {
 	}
 
 	@Transactional(readOnly = true)
-	public AssessmentResponse read(Long id) {
+	public AssessmentResponse read(User user, Long id) {
 		Assessment assessment = assessmentRepository.findById(id)
 			.orElseThrow(EntityNotFoundException::new);
+
+		validIsReadable(user, assessment);
+
 		return AssessmentResponse.of(assessment);
 	}
 
 	@Transactional(readOnly = true)
-	public List<AssessmentResponse> readAll() {
+	public List<AssessmentResponse> readAll(User user) {
 		List<Assessment> assessments = assessmentRepository.findAll();
+		for (Assessment assessment : assessments) {
+			validIsReadable(user, assessment);
+		}
 		return AssessmentResponse.listOf(assessments);
 	}
+
+	private void validIsReadable(User user, Assessment assessment) {
+		if (assessment.isNotReadable(user)) {
+			throw new RuntimeException("접근할 수 없는 평가입니다.");
+		}
+	}
+
 }

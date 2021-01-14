@@ -17,6 +17,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.luckyno4.server.assessment.dto.AssessmentRequest;
 import com.luckyno4.server.assessment.dto.AssessmentResponse;
 import com.luckyno4.server.assessment.service.AssessmentService;
+import com.luckyno4.server.security.CurrentUser;
+import com.luckyno4.server.user.domain.User;
 import lombok.RequiredArgsConstructor;
 
 @CrossOrigin("*")
@@ -27,18 +29,19 @@ public class AssessmentController {
 	private final AssessmentService assessmentService;
 
 	@PostMapping
-	public ResponseEntity<Void> createAssessment(@RequestBody @Valid AssessmentRequest assessmentRequest) {
-		Long saveId = assessmentService.save(assessmentRequest);
+	public ResponseEntity<Void> createAssessment(@CurrentUser User user,
+		@RequestBody @Valid AssessmentRequest assessmentRequest) {
+		Long saveId = assessmentService.save(user, assessmentRequest);
 		return ResponseEntity.created(URI.create("/api/assessments/" + saveId)).build();
 	}
 
 	@GetMapping("/{id}")
-	public ResponseEntity<AssessmentResponse> readAssessment(@PathVariable Long id) {
-		return ResponseEntity.ok(assessmentService.read(id));
+	public ResponseEntity<AssessmentResponse> readAssessment(@CurrentUser User user, @PathVariable Long id) {
+		return ResponseEntity.ok(assessmentService.read(user, id));
 	}
 
 	@GetMapping
-	public ResponseEntity<List<AssessmentResponse>> readAllAssessment() {
-		return ResponseEntity.ok(assessmentService.readAll());
+	public ResponseEntity<List<AssessmentResponse>> readAllAssessment(@CurrentUser User user) {
+		return ResponseEntity.ok(assessmentService.readAll(user));
 	}
 }

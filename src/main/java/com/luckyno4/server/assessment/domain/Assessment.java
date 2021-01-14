@@ -9,6 +9,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.validation.constraints.NotBlank;
@@ -16,6 +18,7 @@ import javax.validation.constraints.NotBlank;
 import com.luckyno4.server.category.domain.Category;
 import com.luckyno4.server.common.BaseTimeEntity;
 import com.luckyno4.server.question.domain.Question;
+import com.luckyno4.server.user.domain.User;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -40,9 +43,22 @@ public class Assessment extends BaseTimeEntity {
 	@OneToMany(mappedBy = "assessment", cascade = CascadeType.PERSIST, orphanRemoval = true)
 	private List<Category> categories = new ArrayList<>();
 
+	@ManyToOne
+	@JoinColumn(name = "user_id")
+	private User user;
+
 	@Builder
 	public Assessment(String assessment) {
 		this.assessment = assessment;
+	}
+
+	public boolean isNotReadable(User user) {
+		return !this.user.getEmail().equals(user.getEmail());
+	}
+
+	public void setUser(User user) {
+		this.user = user;
+		user.getMyAssessments().add(this);
 	}
 
 	public List<Question> getQuestions() {

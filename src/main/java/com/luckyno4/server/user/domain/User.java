@@ -1,12 +1,18 @@
 package com.luckyno4.server.user.domain;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
@@ -15,6 +21,7 @@ import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.luckyno4.server.assessment.domain.Assessment;
 import com.luckyno4.server.common.BaseTimeEntity;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -58,6 +65,9 @@ public class User extends BaseTimeEntity {
 	private Role role;
 
 	private boolean deleted;
+
+	@OneToMany(mappedBy = "user", cascade = CascadeType.PERSIST, orphanRemoval = true, fetch = FetchType.EAGER)
+	private List<Assessment> myAssessments = new ArrayList<>();
 
 	@Builder
 	public User(Long id, String name, @Email String email, String imageUrl, Boolean emailVerified, String password,

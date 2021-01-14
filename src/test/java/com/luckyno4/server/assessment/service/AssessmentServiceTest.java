@@ -21,6 +21,7 @@ import com.luckyno4.server.category.domain.CategoryRepository;
 import com.luckyno4.server.category.dto.CategoryRequest;
 import com.luckyno4.server.question.domain.QuestionType;
 import com.luckyno4.server.question.dto.QuestionRequest;
+import com.luckyno4.server.user.domain.User;
 
 @ExtendWith(MockitoExtension.class)
 class AssessmentServiceTest {
@@ -44,6 +45,8 @@ class AssessmentServiceTest {
 
 	private AssessmentResponse assessmentResponse;
 
+	private User user;
+
 	@BeforeEach
 	void setUp() {
 		assessmentService = new AssessmentService(assessmentRepository, categoryRepository);
@@ -57,8 +60,14 @@ class AssessmentServiceTest {
 
 		assessmentRequest = new AssessmentRequest("평가", Collections.singletonList(categoryRequest));
 
+		user = User.builder()
+			.id(1L)
+			.email("test@test.com")
+			.name("test")
+			.build();
+
 		category = categoryRequest.toCategory();
-		assessment = new Assessment(1L, "평가", Collections.singletonList(category));
+		assessment = new Assessment(1L, "평가", Collections.singletonList(category), user);
 
 		assessmentResponse = AssessmentResponse.of(assessment);
 	}
@@ -67,7 +76,7 @@ class AssessmentServiceTest {
 	void save() {
 		when(assessmentRepository.save(any())).thenReturn(assessment);
 
-		assessmentService.save(assessmentRequest);
+		assessmentService.save(user, assessmentRequest);
 
 		verify(assessmentRepository).save(any());
 	}
@@ -76,7 +85,7 @@ class AssessmentServiceTest {
 	void read() {
 		when(assessmentRepository.findById(anyLong())).thenReturn(Optional.ofNullable(assessment));
 
-		AssessmentResponse expect = assessmentService.read(1L);
+		AssessmentResponse expect = assessmentService.read(user, 1L);
 
 		assertThat(expect).isEqualTo(assessmentResponse);
 	}

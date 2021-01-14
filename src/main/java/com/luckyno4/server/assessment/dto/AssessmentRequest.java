@@ -27,24 +27,19 @@ public class AssessmentRequest {
 
 	public Assessment toAssessment() {
 		return new Assessment(assessment);
-		// return Assessment.builder()
-		// 	.assessment(assessment)
-		// 	.build();
 	}
 
 	public List<Category> toCategories() {
 		return categories.stream()
-			.map(category -> category.toCategory())
+			.map(CategoryRequest::toCategory)
 			.collect(Collectors.toList());
 	}
 
 	public List<List<Question>> toQuestions() {
 		return categories.stream()
-			.map(categoryRequest -> {
-				return categoryRequest.getQuestions().stream()
-					.map(QuestionRequest::toQuestion)
-					.collect(Collectors.toList());
-			})
+			.map(categoryRequest -> categoryRequest.getQuestions().stream()
+				.map(QuestionRequest::toQuestion)
+				.collect(Collectors.toList()))
 			.collect(Collectors.toList());
 	}
 }

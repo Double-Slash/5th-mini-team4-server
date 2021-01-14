@@ -32,6 +32,7 @@ import com.luckyno4.server.documentation.Documentation;
 import com.luckyno4.server.question.domain.Question;
 import com.luckyno4.server.question.domain.QuestionType;
 import com.luckyno4.server.question.dto.QuestionRequest;
+import com.luckyno4.server.user.domain.User;
 
 @WebMvcTest(controllers = AssessmentController.class)
 class AssessmentControllerTest extends Documentation {
@@ -45,6 +46,8 @@ class AssessmentControllerTest extends Documentation {
 	private CategoryRequest categoryRequest;
 
 	private QuestionRequest questionRequest;
+
+	private User user;
 
 	private Assessment assessment;
 
@@ -71,6 +74,12 @@ class AssessmentControllerTest extends Documentation {
 
 		assessmentRequest = new AssessmentRequest("평가", Collections.singletonList(categoryRequest));
 
+		user = User.builder()
+			.id(1L)
+			.email("test@test.com")
+			.name("test")
+			.build();
+
 		category = categoryRequest.toCategory();
 
 		Question question = questionRequest.toQuestion();
@@ -81,7 +90,7 @@ class AssessmentControllerTest extends Documentation {
 
 		answer.setQuestion(question);
 
-		assessment = new Assessment(1L, "평가", Collections.singletonList(category));
+		assessment = new Assessment(1L, "평가", Collections.singletonList(category), user);
 
 		assessmentResponse = AssessmentResponse.of(assessment);
 
@@ -91,7 +100,7 @@ class AssessmentControllerTest extends Documentation {
 	@WithMockCustomUser
 	@Test
 	void createAssessment() throws Exception {
-		given(assessmentService.save(any())).willReturn(1L);
+		given(assessmentService.save(any(), any())).willReturn(1L);
 
 		mockMvc.perform(post("/api/assessments")
 			.content(objectMapper.writeValueAsString(assessmentRequest))
@@ -105,7 +114,7 @@ class AssessmentControllerTest extends Documentation {
 	@WithMockCustomUser
 	@Test
 	void readAssessment() throws Exception {
-		given(assessmentService.read(anyLong())).willReturn(assessmentResponse);
+		given(assessmentService.read(any(), anyLong())).willReturn(assessmentResponse);
 
 		mockMvc.perform(RestDocumentationRequestBuilders.get("/api/assessments/{id}", 1L)
 			.accept(MediaType.APPLICATION_JSON))
