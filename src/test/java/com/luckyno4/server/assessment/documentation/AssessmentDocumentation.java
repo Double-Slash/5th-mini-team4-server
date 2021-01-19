@@ -49,4 +49,16 @@ public class AssessmentDocumentation {
 					.description("기여도")
 			));
 	}
+
+	public static RestDocumentationResultHandler setRespondent() {
+		return document("assessment/setRespond",
+			pathParameters(
+				parameterWithName("id").description("응답자 등록할 평가 ID")
+			),
+			requestFields(
+				fieldWithPath("userRequests").type(JsonFieldType.ARRAY).description("응답자 목록"),
+				fieldWithPath("userRequests.[].name").type(JsonFieldType.STRING).description("응답자 이름"),
+				fieldWithPath("userRequests.[].email").type(JsonFieldType.STRING).description("응답자 이메일")));
+
+	}
 }

@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -44,8 +45,11 @@ public class Assessment extends BaseTimeEntity {
 	private List<Category> categories = new ArrayList<>();
 
 	@ManyToOne
-	@JoinColumn(name = "user_id")
-	private User user;
+	@JoinColumn(name = "creator_id")
+	private User creator;
+
+	@OneToMany(mappedBy = "assessment", cascade = CascadeType.PERSIST, orphanRemoval = true, fetch = FetchType.LAZY)
+	private List<AssessmentUser> assessmentUsers = new ArrayList<>();
 
 	@Builder
 	public Assessment(String assessment) {
@@ -53,11 +57,11 @@ public class Assessment extends BaseTimeEntity {
 	}
 
 	public boolean isNotReadable(User user) {
-		return !this.user.getEmail().equals(user.getEmail());
+		return !this.creator.getEmail().equals(user.getEmail());
 	}
 
-	public void setUser(User user) {
-		this.user = user;
+	public void setCreator(User user) {
+		this.creator = user;
 		user.getMyAssessments().add(this);
 	}
 
@@ -65,5 +69,9 @@ public class Assessment extends BaseTimeEntity {
 		return categories.stream()
 			.flatMap(category -> category.getQuestions().stream())
 			.collect(Collectors.toList());
+	}
+
+	public void setUsers(List<User> users) {
+
 	}
 }

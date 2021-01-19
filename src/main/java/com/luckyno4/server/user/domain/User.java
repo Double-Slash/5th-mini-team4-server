@@ -22,6 +22,8 @@ import org.hibernate.annotations.Where;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.luckyno4.server.assessment.domain.Assessment;
+import com.luckyno4.server.assessment.domain.AssessmentUser;
+import com.luckyno4.server.category.domain.CategoryUser;
 import com.luckyno4.server.common.BaseTimeEntity;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -66,12 +68,21 @@ public class User extends BaseTimeEntity {
 
 	private boolean deleted;
 
-	@OneToMany(mappedBy = "user", cascade = CascadeType.PERSIST, orphanRemoval = true, fetch = FetchType.EAGER)
+	@OneToMany(mappedBy = "creator", cascade = CascadeType.PERSIST, orphanRemoval = true, fetch = FetchType.EAGER)
 	private List<Assessment> myAssessments = new ArrayList<>();
 
+	@OneToMany(mappedBy = "respond", cascade = CascadeType.PERSIST, orphanRemoval = true, fetch = FetchType.LAZY)
+	private List<AssessmentUser> assessmentUsers = new ArrayList<>();
+
+	@OneToMany(mappedBy = "responsibility", cascade = CascadeType.PERSIST, orphanRemoval = true, fetch = FetchType.LAZY)
+	private List<CategoryUser> categoryUsers = new ArrayList<>();
+
 	@Builder
-	public User(Long id, String name, @Email String email, String imageUrl, Boolean emailVerified, String password,
-		@NotNull AuthProvider provider, String providerId, Role role) {
+	public User(Long id, String name, @Email String email, String imageUrl, Boolean emailVerified,
+		String password, @NotNull AuthProvider provider, String providerId, Role role, boolean deleted,
+		List<Assessment> myAssessments,
+		List<AssessmentUser> assessmentUsers,
+		List<CategoryUser> categoryUsers) {
 		this.id = id;
 		this.name = name;
 		this.email = email;
@@ -81,6 +92,10 @@ public class User extends BaseTimeEntity {
 		this.provider = provider;
 		this.providerId = providerId;
 		this.role = role;
+		this.deleted = deleted;
+		this.myAssessments = myAssessments;
+		this.assessmentUsers = assessmentUsers;
+		this.categoryUsers = categoryUsers;
 	}
 
 	public String roleName() {

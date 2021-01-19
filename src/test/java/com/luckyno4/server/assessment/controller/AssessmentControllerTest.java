@@ -33,6 +33,8 @@ import com.luckyno4.server.question.domain.Question;
 import com.luckyno4.server.question.domain.QuestionType;
 import com.luckyno4.server.question.dto.QuestionRequest;
 import com.luckyno4.server.user.domain.User;
+import com.luckyno4.server.user.dto.UserRequest;
+import com.luckyno4.server.user.dto.UserRequests;
 
 @WebMvcTest(controllers = AssessmentController.class)
 class AssessmentControllerTest extends Documentation {
@@ -46,6 +48,8 @@ class AssessmentControllerTest extends Documentation {
 	private CategoryRequest categoryRequest;
 
 	private QuestionRequest questionRequest;
+
+	private UserRequests userRequests;
 
 	private User user;
 
@@ -74,6 +78,9 @@ class AssessmentControllerTest extends Documentation {
 
 		assessmentRequest = new AssessmentRequest("평가", Collections.singletonList(categoryRequest));
 
+		UserRequest userRequest = new UserRequest("사용자", "test@test.com");
+		userRequests = new UserRequests(Collections.singletonList(userRequest));
+
 		user = User.builder()
 			.id(1L)
 			.email("test@test.com")
@@ -90,7 +97,7 @@ class AssessmentControllerTest extends Documentation {
 
 		answer.setQuestion(question);
 
-		assessment = new Assessment(1L, "평가", Collections.singletonList(category), user);
+		assessment = new Assessment(1L, "평가", Collections.singletonList(category), user, Collections.emptyList());
 
 		assessmentResponse = AssessmentResponse.of(assessment);
 
@@ -109,6 +116,17 @@ class AssessmentControllerTest extends Documentation {
 			.andExpect(header().string("Location", "/api/assessments/1"))
 			.andDo(print())
 			.andDo(AssessmentDocumentation.createAssessment());
+	}
+
+	@WithMockCustomUser
+	@Test
+	void setRespondent() throws Exception {
+		mockMvc.perform(RestDocumentationRequestBuilders.patch("/api/assessments/{id}", 1L)
+			.content(objectMapper.writeValueAsString(userRequests))
+			.contentType(MediaType.APPLICATION_JSON_UTF8))
+			.andExpect(status().isOk())
+			.andDo(print())
+			.andDo(AssessmentDocumentation.setRespondent());
 	}
 
 	@WithMockCustomUser

@@ -1,6 +1,7 @@
 package com.luckyno4.server.assessment.service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.persistence.EntityNotFoundException;
 
@@ -9,12 +10,16 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.luckyno4.server.assessment.domain.Assessment;
 import com.luckyno4.server.assessment.domain.AssessmentRepository;
+import com.luckyno4.server.assessment.domain.AssessmentUser;
+import com.luckyno4.server.assessment.domain.AssessmentUserRepository;
 import com.luckyno4.server.assessment.dto.AssessmentRequest;
 import com.luckyno4.server.assessment.dto.AssessmentResponse;
 import com.luckyno4.server.category.domain.Category;
 import com.luckyno4.server.category.domain.CategoryRepository;
 import com.luckyno4.server.question.domain.Question;
 import com.luckyno4.server.user.domain.User;
+import com.luckyno4.server.user.domain.UserRepository;
+import com.luckyno4.server.user.dto.UserRequests;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -22,11 +27,13 @@ import lombok.RequiredArgsConstructor;
 public class AssessmentService {
 	private final AssessmentRepository assessmentRepository;
 	private final CategoryRepository categoryRepository;
+	private final UserRepository userRepository;
+	private final AssessmentUserRepository assessmentUserRepository;
 
 	@Transactional
 	public Long save(User user, AssessmentRequest assessmentRequest) {
 		Assessment assessment = assessmentRequest.toAssessment();
-		assessment.setUser(user);
+		assessment.setCreator(user);
 
 		assessmentRepository.save(assessment);
 
@@ -57,6 +64,31 @@ public class AssessmentService {
 		}
 	}
 
+	public void setRespondents(User user, Long id, UserRequests userRequests) {
+		Assessment assessment = assessmentRepository.findById(id)
+			.orElseThrow(EntityNotFoundException::new);
+
+		validIsReadable(user, assessment);
+
+		List<User> users = userRequests.getUserRequests()
+			.stream()
+			.map(userRequest ->
+				userRepository.findByEmail(userRequest.getEmail())
+					.orElseThrow(EntityNotFoundException::new))
+			.collect(Collectors.toList());
+
+		List<AssessmentUser> assessmentUsers = users.stream()
+			.map(respondent -> assessmentUserRepository.save(AssessmentUser.builder()
+				.respond(respondent)
+				.assessment(assessment)
+				.build()))
+			.collect(Collectors.toList());
+
+		assessment.setAssessmentUsers(assessmentUsers);
+
+		assessmentRepository.save(assessment);
+	}
+
 	@Transactional(readOnly = true)
 	public AssessmentResponse read(User user, Long id) {
 		Assessment assessment = assessmentRepository.findById(id)
@@ -81,5 +113,4 @@ public class AssessmentService {
 			throw new RuntimeException("접근할 수 없는 평가입니다.");
 		}
 	}
-
 }
