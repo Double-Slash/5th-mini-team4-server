@@ -43,6 +43,12 @@ public class AuthAcceptanceStep {
 		return requestTokenByLogin(loginRequest);
 	}
 
+	public static AuthResponse requestAuth() {
+		LoginRequest loginRequest = new LoginRequest("test1@test.com", USER_PASSWORD);
+
+		return requestTokenByLogin(loginRequest);
+	}
+
 	public static String toHeaderValue(AuthResponse authResponse) {
 		return authResponse.getTokenType() + " " + authResponse.getAccessToken();
 	}

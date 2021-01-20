@@ -51,7 +51,6 @@ public class User extends BaseTimeEntity {
 
 	private String imageUrl;
 
-	@Column(nullable = false)
 	private Boolean emailVerified = false;
 
 	@JsonIgnore
@@ -98,5 +97,13 @@ public class User extends BaseTimeEntity {
 
 	public String roleName() {
 		return role.name();
+	}
+
+	public boolean isReadable(String email) {
+		return this.email.equals(email);
+	}
+
+	public void addAssessmentUser(AssessmentUser assessmentUser) {
+		this.assessmentUsers.add(assessmentUser);
 	}
 }

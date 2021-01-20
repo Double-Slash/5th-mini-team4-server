@@ -39,7 +39,7 @@ public class AssessmentController {
 
 	@PatchMapping("/{id}")
 	public ResponseEntity<Void> setRespondents(@CurrentUser User user,
-		@PathVariable Long id, UserRequests userRequests) {
+		@PathVariable Long id, @RequestBody UserRequests userRequests) {
 		assessmentService.setRespondents(user, id, userRequests);
 		return ResponseEntity.ok().build();
 	}

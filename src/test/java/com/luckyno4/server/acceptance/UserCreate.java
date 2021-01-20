@@ -35,5 +35,15 @@ public class UserCreate {
 		user.setRole(Role.ROLE_USER);
 
 		userRepository.save(user);
+
+		User user1 = new User();
+		user1.setName(USER_NAME);
+		user1.setEmail("test1@test.com");
+		user1.setPassword(USER_PASSWORD);
+		user1.setProvider(AuthProvider.local);
+		user1.setPassword(passwordEncoder.encode(user1.getPassword()));
+		user1.setRole(Role.ROLE_USER);
+
+		userRepository.save(user1);
 	}
 }

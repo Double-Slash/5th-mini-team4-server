@@ -82,10 +82,13 @@ class AssessmentServiceTest {
 			.email("test@test.com")
 			.name("test")
 			.myAssessments(new ArrayList<>())
+			.categoryUsers(new ArrayList<>())
+			.assessmentUsers(new ArrayList<>())
 			.build();
 
 		category = categoryRequest.toCategory();
-		assessment = new Assessment(1L, "평가", Collections.singletonList(category), user, Collections.emptyList());
+		assessment = new Assessment(
+			1L, "평가", Collections.singletonList(category), user, new ArrayList<>());
 
 		assessmentResponse = AssessmentResponse.of(assessment);
 
@@ -94,7 +97,7 @@ class AssessmentServiceTest {
 			.assessment(assessment)
 			.build();
 
-		UserRequest userRequest = new UserRequest("test", "test@test.com");
+		UserRequest userRequest = new UserRequest("test@test.com");
 		userRequests = new UserRequests(Collections.singletonList(userRequest));
 	}
 
@@ -111,7 +114,7 @@ class AssessmentServiceTest {
 	void setRespondents() {
 		when(assessmentRepository.findById(anyLong())).thenReturn(Optional.ofNullable(assessment));
 		when(userRepository.findByEmail(any())).thenReturn(Optional.ofNullable(user));
-		when(assessmentUserRepository.save(any())).thenReturn(assessmentUser);
+		lenient().when(assessmentUserRepository.save(any())).thenReturn(assessmentUser);
 
 		assessmentService.setRespondents(user, 1L, userRequests);
 

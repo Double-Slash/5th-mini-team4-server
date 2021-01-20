@@ -19,6 +19,8 @@ import com.luckyno4.server.category.dto.CategoryRequest;
 import com.luckyno4.server.question.domain.QuestionType;
 import com.luckyno4.server.question.dto.QuestionRequest;
 import com.luckyno4.server.user.dto.AuthResponse;
+import com.luckyno4.server.user.dto.UserRequest;
+import com.luckyno4.server.user.dto.UserRequests;
 import io.restassured.RestAssured;
 
 public class AnswerAcceptanceTest extends AcceptanceTest {
@@ -37,6 +39,11 @@ public class AnswerAcceptanceTest extends AcceptanceTest {
 
 		AuthResponse authResponse = requestAdminAuth();
 
+		AuthResponse authResponse1 = requestAuth();
+
+		UserRequests userRequests = new UserRequests(
+			Collections.singletonList(new UserRequest("test1@test.com")));
+
 		RestAssured.given().log().all()
 			.header(AUTHORIZATION, toHeaderValue(authResponse))
 			.contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -47,6 +54,16 @@ public class AnswerAcceptanceTest extends AcceptanceTest {
 			.then().log().all()
 			.statusCode(HttpStatus.CREATED.value());
 
+		RestAssured.given().log().all()
+			.header(AUTHORIZATION, toHeaderValue(authResponse))
+			.contentType(MediaType.APPLICATION_JSON_VALUE)
+			.accept(MediaType.APPLICATION_JSON_VALUE)
+			.body(userRequests)
+			.when()
+			.patch("/api/assessments/1")
+			.then().log().all()
+			.statusCode(HttpStatus.OK.value());
+
 		AnswerRequest answerRequest = new AnswerRequest("작성자", "서술형 응답 내역", 50);
 
 		AnswerCreateRequest answerCreateRequest = new AnswerCreateRequest(1L, Collections.singletonList(answerRequest));
@@ -54,7 +71,7 @@ public class AnswerAcceptanceTest extends AcceptanceTest {
 		// when
 		// 응답 생성 API 호출
 		RestAssured.given().log().all()
-			.header(AUTHORIZATION, toHeaderValue(authResponse))
+			.header(AUTHORIZATION, toHeaderValue(authResponse1))
 			.contentType(MediaType.APPLICATION_JSON_VALUE)
 			.accept(MediaType.APPLICATION_JSON_VALUE)
 			.body(answerCreateRequest)
@@ -66,7 +83,7 @@ public class AnswerAcceptanceTest extends AcceptanceTest {
 		// then
 		// 평가 호출 시 질문에 대한 응답이 옳게 저장되었는가.
 		AssessmentResponse expect = RestAssured.given().log().all()
-			.header(AUTHORIZATION, toHeaderValue(authResponse))
+			.header(AUTHORIZATION, toHeaderValue(authResponse1))
 			.contentType(MediaType.APPLICATION_JSON_VALUE)
 			.accept(MediaType.APPLICATION_JSON_VALUE)
 			.when()

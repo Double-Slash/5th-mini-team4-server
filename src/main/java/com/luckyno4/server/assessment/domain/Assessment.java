@@ -57,7 +57,10 @@ public class Assessment extends BaseTimeEntity {
 	}
 
 	public boolean isNotReadable(User user) {
-		return !this.creator.getEmail().equals(user.getEmail());
+		boolean isNotRespond = assessmentUsers.stream()
+			.map(AssessmentUser::getRespond)
+			.noneMatch(respond -> respond.isReadable(user.getEmail()));
+		return !creator.isReadable(user.getEmail()) && isNotRespond;
 	}
 
 	public void setCreator(User user) {
@@ -71,7 +74,7 @@ public class Assessment extends BaseTimeEntity {
 			.collect(Collectors.toList());
 	}
 
-	public void setUsers(List<User> users) {
-
+	public void addAssessmentUser(AssessmentUser assessmentUser) {
+		this.assessmentUsers.add(assessmentUser);
 	}
 }

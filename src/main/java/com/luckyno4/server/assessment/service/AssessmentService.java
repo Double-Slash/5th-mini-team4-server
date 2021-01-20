@@ -1,5 +1,6 @@
 package com.luckyno4.server.assessment.service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -53,8 +54,9 @@ public class AssessmentService {
 	}
 
 	private void setCategory(Category category, List<Question> questions) {
-		questions.stream()
-			.forEach(question -> question.setCategory(category));
+		for (Question question : questions) {
+			question.setCategory(category);
+		}
 	}
 
 	private void setAssessment(Assessment assessment, List<Category> categories) {
@@ -75,18 +77,23 @@ public class AssessmentService {
 				userRepository.findByEmail(userRequest.getEmail())
 					.orElse(User.builder()
 						.email(userRequest.getEmail())
+						.assessmentUsers(new ArrayList<>())
+						.myAssessments(new ArrayList<>())
+						.categoryUsers(new ArrayList<>())
 						.build())
 			)
 			.collect(Collectors.toList());
 
-		List<AssessmentUser> assessmentUsers = users.stream()
-			.map(respondent -> assessmentUserRepository.save(AssessmentUser.builder()
-				.respond(respondent)
-				.assessment(assessment)
-				.build()))
-			.collect(Collectors.toList());
+		for (User respondent : users) {
+			AssessmentUser assessmentUser = new AssessmentUser();
+			assessmentUser.setRespond(respondent);
+			assessmentUser.setAssessment(assessment);
 
-		assessment.setAssessmentUsers(assessmentUsers);
+			respondent.addAssessmentUser(assessmentUser);
+			assessment.addAssessmentUser(assessmentUser);
+
+			assessmentUserRepository.save(assessmentUser);
+		}
 
 		assessmentRepository.save(assessment);
 	}
@@ -104,8 +111,9 @@ public class AssessmentService {
 	@Transactional(readOnly = true)
 	public List<AssessmentResponse> readAll(User user) {
 		List<Assessment> assessments = assessmentRepository.findAll();
-		assessments.stream()
-			.forEach(assessment -> validIsReadable(user, assessment));
+		for (Assessment assessment : assessments) {
+			validIsReadable(user, assessment);
+		}
 		return AssessmentResponse.listOf(assessments);
 	}
 

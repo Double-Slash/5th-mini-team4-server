@@ -57,7 +57,6 @@ public class AssessmentDocumentation {
 			),
 			requestFields(
 				fieldWithPath("userRequests").type(JsonFieldType.ARRAY).description("응답자 목록"),
-				fieldWithPath("userRequests.[].name").type(JsonFieldType.STRING).description("응답자 이름"),
 				fieldWithPath("userRequests.[].email").type(JsonFieldType.STRING).description("응답자 이메일")));
 
 	}

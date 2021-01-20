@@ -78,7 +78,7 @@ class AssessmentControllerTest extends Documentation {
 
 		assessmentRequest = new AssessmentRequest("평가", Collections.singletonList(categoryRequest));
 
-		UserRequest userRequest = new UserRequest("사용자", "test@test.com");
+		UserRequest userRequest = new UserRequest("test@test.com");
 		userRequests = new UserRequests(Collections.singletonList(userRequest));
 
 		user = User.builder()
