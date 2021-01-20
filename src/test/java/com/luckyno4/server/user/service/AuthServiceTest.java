@@ -3,6 +3,8 @@ package com.luckyno4.server.user.service;
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
+import java.util.Optional;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -68,7 +70,7 @@ class AuthServiceTest {
 		user.setRole(Role.ROLE_USER);
 		user.setProviderId("local");
 
-		when(userRepository.existsByEmail(any())).thenReturn(false);
+		lenient().when(userRepository.existsByEmail(any())).thenReturn(false);
 		when(userRepository.save(any())).thenReturn(user);
 
 		assertThat(authService.registerUser(signUpRequest)).isEqualTo(user.getId());
@@ -90,7 +92,7 @@ class AuthServiceTest {
 		user.setRole(Role.ROLE_USER);
 		user.setProviderId("local");
 
-		when(userRepository.existsByEmail(any())).thenReturn(true);
+		when(userRepository.findByEmail(any())).thenReturn(Optional.of(user));
 
 		assertThatThrownBy(() -> authService.registerUser(signUpRequest))
 			.isInstanceOf(RuntimeException.class)

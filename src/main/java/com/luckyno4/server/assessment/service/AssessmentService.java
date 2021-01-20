@@ -53,9 +53,8 @@ public class AssessmentService {
 	}
 
 	private void setCategory(Category category, List<Question> questions) {
-		for (Question question : questions) {
-			question.setCategory(category);
-		}
+		questions.stream()
+			.forEach(question -> question.setCategory(category));
 	}
 
 	private void setAssessment(Assessment assessment, List<Category> categories) {
@@ -74,7 +73,10 @@ public class AssessmentService {
 			.stream()
 			.map(userRequest ->
 				userRepository.findByEmail(userRequest.getEmail())
-					.orElseThrow(EntityNotFoundException::new))
+					.orElse(User.builder()
+						.email(userRequest.getEmail())
+						.build())
+			)
 			.collect(Collectors.toList());
 
 		List<AssessmentUser> assessmentUsers = users.stream()
@@ -102,9 +104,8 @@ public class AssessmentService {
 	@Transactional(readOnly = true)
 	public List<AssessmentResponse> readAll(User user) {
 		List<Assessment> assessments = assessmentRepository.findAll();
-		for (Assessment assessment : assessments) {
-			validIsReadable(user, assessment);
-		}
+		assessments.stream()
+			.forEach(assessment -> validIsReadable(user, assessment));
 		return AssessmentResponse.listOf(assessments);
 	}
 

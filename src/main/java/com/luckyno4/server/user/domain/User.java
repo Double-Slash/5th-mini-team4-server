@@ -43,7 +43,6 @@ public class User extends BaseTimeEntity {
 	@SequenceGenerator(name = "user_sequence_gen", sequenceName = "user_sequence")
 	private Long id;
 
-	@Column(nullable = false)
 	private String name;
 
 	@Email
@@ -58,7 +57,6 @@ public class User extends BaseTimeEntity {
 	@JsonIgnore
 	private String password;
 
-	@NotNull
 	@Enumerated(EnumType.STRING)
 	private AuthProvider provider;
 

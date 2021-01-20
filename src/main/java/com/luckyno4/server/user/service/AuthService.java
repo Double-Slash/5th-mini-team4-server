@@ -1,5 +1,7 @@
 package com.luckyno4.server.user.service;
 
+import java.util.Optional;
+
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -45,10 +47,18 @@ public class AuthService {
 	}
 
 	public Long registerUser(SignUpRequest signUpRequest) {
-		if (userRepository.existsByEmail(signUpRequest.getEmail())) {
-			throw new RuntimeException("Email Duplicated");
+		Optional<User> byEmail = userRepository.findByEmail(signUpRequest.getEmail());
+		if (byEmail.isPresent()) {
+			if (byEmail.get().getProvider() != null) {
+				throw new RuntimeException("Email Duplicated");
+			}
+			byEmail.ifPresent(user -> {
+				user.setProvider(AuthProvider.local);
+				user.setPassword(passwordEncoder.encode(user.getPassword()));
+				user.setRole(Role.ROLE_USER);
+			});
+			return byEmail.get().getId();
 		}
-
 		User user = new User();
 		user.setName(signUpRequest.getName());
 		user.setEmail(signUpRequest.getEmail());
@@ -56,8 +66,8 @@ public class AuthService {
 		user.setProvider(AuthProvider.local);
 		user.setPassword(passwordEncoder.encode(user.getPassword()));
 		user.setRole(Role.ROLE_USER);
-
 		User result = userRepository.save(user);
+
 		return result.getId();
 	}
 }
