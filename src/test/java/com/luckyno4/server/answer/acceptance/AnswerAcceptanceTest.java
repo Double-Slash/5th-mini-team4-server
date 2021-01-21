@@ -95,7 +95,7 @@ public class AnswerAcceptanceTest extends AcceptanceTest {
 			answerRequest.getWriter());
 		assertThat(expect.getCategories().get(0).getQuestions().get(0).getAnswers().get(0).getAnswer()).isEqualTo(
 			answerRequest.getAnswer());
-		assertThat(expect.getCategories().get(0).getQuestions().get(0).getAnswers().get(0).getContribution()).isEqualTo(
-			answerRequest.getContribution());
+		assertThat(expect.getCategories().get(0).getQuestions().get(0).getAnswers().get(0).getNumber()).isEqualTo(
+			answerRequest.getNumber());
 	}
 }

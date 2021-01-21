@@ -45,7 +45,7 @@ public class AssessmentDocumentation {
 					.description("사용자"),
 				fieldWithPath("categories.[].questions.[].answers.[].answer").type(JsonFieldType.STRING)
 					.description("평가 내용"),
-				fieldWithPath("categories.[].questions.[].answers.[].contribution").type(JsonFieldType.NUMBER)
+				fieldWithPath("categories.[].questions.[].answers.[].number").type(JsonFieldType.NUMBER)
 					.description("기여도")
 			));
 	}

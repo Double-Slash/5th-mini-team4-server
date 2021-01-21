@@ -17,7 +17,7 @@ public class AnswerResponse {
 
 	private String answer;
 
-	private int contribution;
+	private int number;
 
 	public static List<AnswerResponse> listOf(List<Answer> answers) {
 		return answers.stream()
@@ -26,6 +26,6 @@ public class AnswerResponse {
 	}
 
 	private static AnswerResponse of(Answer answer) {
-		return new AnswerResponse(answer.getWriter(), answer.getAnswer(), answer.getContribution());
+		return new AnswerResponse(answer.getWriter(), answer.getAnswer(), answer.getNumber());
 	}
 }

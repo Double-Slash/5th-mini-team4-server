@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import javax.mail.MessagingException;
 import javax.persistence.EntityNotFoundException;
 
 import org.springframework.stereotype.Service;
@@ -17,6 +18,7 @@ import com.luckyno4.server.assessment.dto.AssessmentRequest;
 import com.luckyno4.server.assessment.dto.AssessmentResponse;
 import com.luckyno4.server.category.domain.Category;
 import com.luckyno4.server.category.domain.CategoryRepository;
+import com.luckyno4.server.common.mail.CustomMailSender;
 import com.luckyno4.server.question.domain.Question;
 import com.luckyno4.server.user.domain.User;
 import com.luckyno4.server.user.domain.UserRepository;
@@ -30,6 +32,7 @@ public class AssessmentService {
 	private final CategoryRepository categoryRepository;
 	private final UserRepository userRepository;
 	private final AssessmentUserRepository assessmentUserRepository;
+	private final CustomMailSender customMailSender;
 
 	@Transactional
 	public Long save(User user, AssessmentRequest assessmentRequest) {
@@ -65,7 +68,7 @@ public class AssessmentService {
 		}
 	}
 
-	public void setRespondents(User user, Long id, UserRequests userRequests) {
+	public void setRespondents(User user, Long id, UserRequests userRequests) throws MessagingException {
 		Assessment assessment = assessmentRepository.findById(id)
 			.orElseThrow(EntityNotFoundException::new);
 
@@ -96,6 +99,12 @@ public class AssessmentService {
 		}
 
 		assessmentRepository.save(assessment);
+
+		String[] emails = users.stream()
+			.map(User::getEmail)
+			.toArray(String[]::new);
+		customMailSender.sendMail(assessment.getAssessment(), emails, assessment.getCreator().getName(),
+			assessment.getId());
 	}
 
 	@Transactional(readOnly = true)

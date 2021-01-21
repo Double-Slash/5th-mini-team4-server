@@ -37,7 +37,7 @@ class AnswerServiceTest {
 
 		answer = Answer.builder()
 			.answer("그냥 그랬어요.")
-			.contribution(40)
+			.number(40)
 			.writer("사용자")
 			.build();
 
@@ -52,7 +52,7 @@ class AnswerServiceTest {
 
 		assertAll(
 			() -> assertThat(answer.getAnswer()).isEqualTo(answerRequest.getAnswer()),
-			() -> assertThat(answer.getContribution()).isEqualTo(answerRequest.getContribution())
+			() -> assertThat(answer.getNumber()).isEqualTo(answerRequest.getNumber())
 		);
 	}
 }

@@ -18,13 +18,13 @@ public class AnswerRequest {
 	@Lob
 	private String answer;
 
-	private int contribution;
+	private int number;
 
 	public Answer toAnswer() {
 		return Answer.builder()
 			.writer(writer)
 			.answer(answer)
-			.contribution(contribution)
+			.number(number)
 			.build();
 	}
 
@@ -35,13 +35,13 @@ public class AnswerRequest {
 		if (!(o instanceof AnswerRequest))
 			return false;
 		AnswerRequest that = (AnswerRequest)o;
-		return contribution == that.contribution &&
+		return number == that.number &&
 			Objects.equals(writer, that.writer) &&
 			Objects.equals(answer, that.answer);
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(writer, answer, contribution);
+		return Objects.hash(writer, answer, number);
 	}
 }

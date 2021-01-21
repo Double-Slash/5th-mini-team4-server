@@ -3,6 +3,7 @@ package com.luckyno4.server.assessment.controller;
 import java.net.URI;
 import java.util.List;
 
+import javax.mail.MessagingException;
 import javax.validation.Valid;
 
 import org.springframework.http.ResponseEntity;
@@ -39,7 +40,7 @@ public class AssessmentController {
 
 	@PatchMapping("/{id}")
 	public ResponseEntity<Void> setRespondents(@CurrentUser User user,
-		@PathVariable Long id, @RequestBody UserRequests userRequests) {
+		@PathVariable Long id, @RequestBody UserRequests userRequests) throws MessagingException {
 		assessmentService.setRespondents(user, id, userRequests);
 		return ResponseEntity.ok().build();
 	}

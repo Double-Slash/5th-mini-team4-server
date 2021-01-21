@@ -16,7 +16,7 @@ public class AnswerDocumentation {
 			requestFields(
 				fieldWithPath("writer").type(JsonFieldType.STRING).description("사용자"),
 				fieldWithPath("answer").type(JsonFieldType.STRING).description("평가 내용"),
-				fieldWithPath("contribution").type(JsonFieldType.NUMBER).description("기여도")
+				fieldWithPath("number").type(JsonFieldType.NUMBER).description("기여도")
 			)
 		);
 	}
@@ -35,7 +35,7 @@ public class AnswerDocumentation {
 				fieldWithPath("answers").type(JsonFieldType.ARRAY).description("답변 목록"),
 				fieldWithPath("answers.[].writer").type(JsonFieldType.STRING).description("사용자"),
 				fieldWithPath("answers.[].answer").type(JsonFieldType.STRING).description("평가 내용"),
-				fieldWithPath("answers.[].contribution").type(JsonFieldType.NUMBER).description("기여도")
+				fieldWithPath("answers.[].number").type(JsonFieldType.NUMBER).description("기여도")
 			));
 
 	}

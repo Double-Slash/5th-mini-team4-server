@@ -28,22 +28,22 @@ public class Answer extends BaseTimeEntity {
 
 	private String answer;
 
-	private int contribution;
+	private int number;
 
 	@ManyToOne
 	@JoinColumn(name = "question_id")
 	private Question question;
 
 	@Builder
-	public Answer(String writer, String answer, int contribution) {
+	public Answer(String writer, String answer, int number) {
 		this.writer = writer;
 		this.answer = answer;
-		this.contribution = contribution;
+		this.number = number;
 	}
 
 	public void update(Answer requestAnswer) {
 		this.answer = requestAnswer.answer;
-		this.contribution = requestAnswer.contribution;
+		this.number = requestAnswer.number;
 	}
 
 	public void setQuestion(Question question) {

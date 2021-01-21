@@ -7,6 +7,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Optional;
 
+import javax.mail.MessagingException;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -22,6 +24,7 @@ import com.luckyno4.server.assessment.dto.AssessmentResponse;
 import com.luckyno4.server.category.domain.Category;
 import com.luckyno4.server.category.domain.CategoryRepository;
 import com.luckyno4.server.category.dto.CategoryRequest;
+import com.luckyno4.server.common.mail.CustomMailSender;
 import com.luckyno4.server.question.domain.QuestionType;
 import com.luckyno4.server.question.dto.QuestionRequest;
 import com.luckyno4.server.user.domain.User;
@@ -45,6 +48,9 @@ class AssessmentServiceTest {
 	@Mock
 	private AssessmentUserRepository assessmentUserRepository;
 
+	@Mock
+	private CustomMailSender customMailSender;
+
 	private AssessmentRequest assessmentRequest;
 
 	private CategoryRequest categoryRequest;
@@ -66,7 +72,7 @@ class AssessmentServiceTest {
 	@BeforeEach
 	void setUp() {
 		assessmentService = new AssessmentService(assessmentRepository, categoryRepository, userRepository,
-			assessmentUserRepository);
+			assessmentUserRepository, customMailSender);
 
 		questionRequest = QuestionRequest.builder()
 			.question("질문은 서술형과 점수형입니다.")
@@ -111,7 +117,7 @@ class AssessmentServiceTest {
 	}
 
 	@Test
-	void setRespondents() {
+	void setRespondents() throws MessagingException {
 		when(assessmentRepository.findById(anyLong())).thenReturn(Optional.ofNullable(assessment));
 		when(userRepository.findByEmail(any())).thenReturn(Optional.ofNullable(user));
 		lenient().when(assessmentUserRepository.save(any())).thenReturn(assessmentUser);
